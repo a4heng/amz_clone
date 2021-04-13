@@ -3,14 +3,28 @@ import './Header.css'
 import {BiSearchAlt2} from 'react-icons/bi'
 import { AiOutlineShoppingCart } from 'react-icons/ai'
 import { IconContext } from "react-icons";
+import { Link } from 'react-router-dom'
+import { useStateValue } from './StateProvider';
+import { auth } from './firebase'
 
 function Header() {
+
+  const [{cart, user}, dispatch] = useStateValue()
+  
+  const handleAuthentication = () =>{
+    if(user) {
+      auth.signOut();
+    }
+  }
+  
   return (
     <div className='header'>
-      <img 
-      className="header__logo" 
-      src="http://pngimg.com/uploads/amazon/amazon_PNG11.png"
-      />
+      <Link to="/">
+        <img 
+        className="header__logo" 
+        src="http://pngimg.com/uploads/amazon/amazon_PNG11.png"
+        />
+      </Link>
       <div className="header__search">
         <input 
         className="header__searchInput" 
@@ -20,14 +34,16 @@ function Header() {
       </div>
 
       <div className='header__nav'>
-        <div className="header__option">
-          <span className="header__optionLineOne">
-            Hello Guest!
-          </span>
-          <span className="header__optionLineTwo">
-            Sign In
-          </span>
-        </div>
+        <Link to={!user && "/login"}>
+          <div onClick={handleAuthentication} className="header__option">
+            <span className="header__optionLineOne">
+              Hello, {user ? user.email.split('@')[0] : "Guest"}!
+            </span>
+            <span className="header__optionLineTwo">
+              {user ? 'Sign Out': 'Sign In'}
+            </span>
+          </div>
+        </Link>
         <div className="header__option">
           <span className="header__optionLineOne">
             Returns
@@ -45,15 +61,17 @@ function Header() {
           </span>
         </div>
         <IconContext.Provider value={{ color: 'whites', size: "22px" }}>
-        <div className="header__optionBasket">
-          <AiOutlineShoppingCart />
-          <span 
-          className="Header__optionLineTwo" 
-          className="header__basketCount"
-          >
-            0
-          </span>
-        </div>
+          <Link to="/checkout">
+            <div className="header__optionBasket">
+              <AiOutlineShoppingCart />
+              <span 
+              className="Header__optionLineTwo" 
+              className="header__basketCount"
+              >
+                {cart?.length}
+              </span>
+            </div>
+          </Link>
         </IconContext.Provider>
       </div>
     </div>
