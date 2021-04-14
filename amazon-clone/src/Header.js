@@ -1,5 +1,5 @@
 import React from 'react'
-import './Header.css'
+import './Styles/Header.css'
 import {BiSearchAlt2} from 'react-icons/bi'
 import { AiOutlineShoppingCart } from 'react-icons/ai'
 import { IconContext } from "react-icons";
